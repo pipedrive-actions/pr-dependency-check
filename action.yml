@@ -11,3 +11,7 @@ inputs:
     description: 'Space-delimited list of custom domains where issues may be found'
     required: false
     default: null
+  pr-number:
+    description: 'PR number to check'
+    required: false
+    default: ''
