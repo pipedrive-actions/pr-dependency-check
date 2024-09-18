@@ -2,6 +2,7 @@ const core = require('@actions/core');
 const github = require('@actions/github');
 
 var customDomains = core.getInput('custom-domains')?.split(/(\s+)/) ?? [];
+var prNumber = core.getInput('pr-number') ?? github.context.issue.number;
 
 const keyPhrases = 'depends on|blocked by';
 const issueTypes = 'issues|pull';
@@ -44,7 +45,7 @@ function getAllDependencies(body) {
             });
         });
     }
-    
+
     var extractableMatches = [...body.matchAll(partialLinkRegex)]
         .concat([...body.matchAll(partialUrlRegex)])
         .concat([...body.matchAll(fullUrlRegex)])
@@ -68,7 +69,7 @@ async function evaluate() {
         const { data: pullRequest } = await octokit.pulls.get({
             owner: github.context.repo.owner,
             repo: github.context.repo.repo,
-            pull_number: github.context.issue.number,
+            pull_number: prNumber,
         });
 
         if (!pullRequest.body){
