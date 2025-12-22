@@ -1,5 +1,6 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
+const { retry } = require('@octokit/plugin-retry');
 
 var customDomains = core.getInput('custom-domains')?.split(/(\s+)/) ?? [];
 var prNumber = core.getInput('pr-number') ?? github.context.issue.number;
@@ -64,7 +65,22 @@ async function evaluate() {
     try {
         core.info('Initializing...');
         const myToken = process.env.GITHUB_TOKEN;
-        const octokit = github.getOctokit(myToken);
+        const maxRetries = parseInt(core.getInput('max-retries') || '3', 10);
+        const MyOctokit = github.getOctokit.plugin(retry);
+        const octokit = new MyOctokit(myToken, {
+            retry: {
+                doNotRetry: [],
+                retries: maxRetries
+            }
+        });
+
+        // Log retry attempts
+        octokit.hook.before('request', (options) => {
+            const retryCount = options.request?.retryCount || 0;
+            if (retryCount > 0) {
+                core.info(`  Retry attempt ${retryCount} for ${options.method} ${options.url}`);
+            }
+        });
 
         const { data: pullRequest } = await octokit.pulls.get({
             owner: github.context.repo.owner,

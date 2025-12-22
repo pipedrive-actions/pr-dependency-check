@@ -1,7 +1,8 @@
 {
   "dependencies": {
     "@actions/core": "^1.2.6",
-    "@actions/github": "^4.0.0"
+    "@actions/github": "^4.0.0",
+    "@octokit/plugin-retry": "^4.0.3"
   },
   "name": "dependencies-action",
   "description": "A GitHub Action that enforces PR dependencies",
