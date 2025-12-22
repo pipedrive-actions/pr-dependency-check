@@ -15,3 +15,7 @@ inputs:
     description: 'PR number to check'
     required: false
     default: ''
+  max-retries:
+    description: 'Maximum number of retry attempts for GitHub API calls (default: 3)'
+    required: false
+    default: '3'

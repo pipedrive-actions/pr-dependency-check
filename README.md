@@ -29,7 +29,7 @@ Just add the following to a `.yml` file in your `.github/workflows/` folder.
 
 ```yaml
 on:
-  pull_request_target: 
+  pull_request_target:
     types: [opened, edited, closed, reopened]
 
 jobs:
@@ -43,3 +43,26 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
+
+## Retry Behavior
+
+The action automatically retries GitHub API calls that fail due to transient errors (network issues, 5xx responses, rate limiting). This improves reliability when GitHub's API experiences temporary issues.
+
+**Default behavior:**
+- 3 retry attempts with exponential backoff
+- Retries on: network errors, 5xx server errors, rate limit errors
+- Each retry adds ~1-7 seconds of delay
+
+**Custom configuration:**
+```yaml
+- uses: gregsdennis/dependencies-action@main
+  with:
+    max-retries: 5  # Override default of 3
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+**Troubleshooting:**
+- Retry attempts are logged in the action output
+- If all retries fail, the action will fail with the last error
+- Set `max-retries: 0` to disable retries (not recommended)
