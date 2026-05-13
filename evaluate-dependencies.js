@@ -65,10 +65,12 @@ async function evaluate() {
     try {
         core.info('Initializing...');
         const myToken = process.env.GITHUB_TOKEN;
-        const maxRetries = parseInt(core.getInput('max-retries') || '3', 10);
+        const maxRetries = parseInt(core.getInput('max-retries') || '5', 10);
+        // Retry on 5xx and 429 only; all other 4xx are permanent and fail immediately
+        const doNotRetry = Array.from({length: 100}, (_, i) => 400 + i).filter(s => s !== 429);
         const octokit = github.getOctokit(myToken, {
             retry: {
-                doNotRetry: [],
+                doNotRetry,
                 retries: maxRetries
             }
         }, retry);

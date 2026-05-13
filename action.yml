@@ -16,6 +16,6 @@ inputs:
     required: false
     default: ''
   max-retries:
-    description: 'Maximum number of retry attempts for GitHub API calls (default: 3)'
+    description: 'Maximum number of retry attempts for GitHub API calls on transient 5xx/429 errors (default: 5)'
     required: false
-    default: '3'
+    default: '5'
