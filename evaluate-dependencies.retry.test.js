@@ -24,7 +24,7 @@ describe('Retry Configuration', () => {
         expect(typeof retry).toBe('function');
     });
 
-    test('default max-retries is 3', () => {
+    test('default max-retries is 10', () => {
         core.getInput.mockImplementation((name) => {
             if (name === 'max-retries') return '';
             if (name === 'custom-domains') return '';
@@ -32,8 +32,8 @@ describe('Retry Configuration', () => {
             return '';
         });
 
-        const defaultMaxRetries = parseInt(core.getInput('max-retries') || '3', 10);
-        expect(defaultMaxRetries).toBe(3);
+        const defaultMaxRetries = parseInt(core.getInput('max-retries') || '10', 10);
+        expect(defaultMaxRetries).toBe(10);
     });
 
     test('max-retries input is respected when provided', () => {
